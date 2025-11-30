@@ -5,7 +5,7 @@ import {
   FinancialRequestsRepo,
 } from '@core/financial/repositories';
 import { UsersRepo } from '@core/users/repositories';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 @Injectable()
 export class FinancialService {
@@ -23,10 +23,9 @@ export class FinancialService {
 
     const financialRequest = FinancialRequest.fromPlain(message, user);
 
-    const [savedRequest] = await Promise.all([
-      this.financialRequestsRepo.save(financialRequest),
-      // Send notification message to admins
-    ]);
+    const savedRequest = await this.financialRequestsRepo.save(
+      financialRequest,
+    );
 
     return savedRequest;
   }
@@ -42,13 +41,16 @@ export class FinancialService {
       this.financialHistoryRepo.getCurrentBudget(),
     ]);
 
+    if (!request) {
+      throw new BadRequestException(`Request with id ${requestId} not found`);
+    }
+
     request.review(approve, budget.total, reviewer);
 
     await Promise.all([
       this.financialRequestsRepo.save(request),
       approve &&
         this.financialHistoryRepo.add(FinancialHistory.fromRequest(request)),
-      // Send notification message to user
     ]);
 
     return request;

@@ -16,8 +16,10 @@ Payment method: Cash
     requestFinanceAdminNotification: `Got new request for {{purpose}} from {{user}}! ✌🏾`,
     approveRequestBtn: 'Approve ✔️',
     approveRequestNotification: `Your request for {{purpose}} was approved! 🥳`,
+    adminApproveRequestNotification: `Request for {{purpose}} was approved 🫱🏾‍🫲🏻`,
     rejectRequestBtn: 'Reject ❌',
     rejectRequestNotification: `Your request for {{purpose}} was rejected, contact with {{reviewer}} for details! 🙈`,
+    adminRejectRequestNotification: `Request for {{purpose}} from {{requester}} был отклонен! 🤕`,
   },
   ru: {
     welcome: 'Привет, {{username}}! 🤙🏾',
@@ -34,7 +36,9 @@ Payment method: Cash
     requestFinanceAdminNotification: `Получен новый запрос на {{purpose}} от {{user}}! ✌🏾`,
     approveRequestBtn: 'Исполнено ✔️',
     approveRequestNotification: `Твой запрос на {{purpose}} был исполнен! 🥳`,
+    adminApproveRequestNotification: `Запрос на {{purpose}} был исполнен 🫱🏾‍🫲🏻`,
     rejectRequestBtn: 'Отклонить ❌',
     rejectRequestNotification: `Твой запрос на {{purpose}} был отклонен, напиши {{reviewer}} за подробностями! 🙈`,
+    adminRejectRequestNotification: `Запрос на {{purpose}} от {{requester}} был отклонен! 🤕`,
   },
 } as const;
