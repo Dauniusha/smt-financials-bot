@@ -1,11 +1,13 @@
 import { mainLocale } from '@common/localization/locales';
 import { randomUUID } from 'node:crypto';
+import { Entity, Column, PrimaryColumn } from 'typeorm';
 
 export enum UserRole {
   Admin = 'admin',
   User = 'user',
 }
 
+@Entity('users')
 export class User {
   static createUser(userData: {
     telegramId: string;
@@ -23,10 +25,21 @@ export class User {
     return user;
   }
 
+  @PrimaryColumn('uuid')
   id: string;
+
+  @Column({ name: 'telegram_id', unique: true })
   telegramId: number;
+
+  @Column()
   username: string;
+
+  @Column()
   locale: string;
+
+  @Column()
   name: string;
+
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.User })
   role: UserRole;
 }

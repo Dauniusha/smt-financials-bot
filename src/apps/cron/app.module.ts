@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { WinstonModule } from 'nest-winston';
 import { LOGGER_CONFIG } from '@common/configs';
 import { GlobalConfigModule } from '@common/modules/config/global-config.module';
+import { DatabaseModule } from '@common/modules/database/database.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { TelegramBotModule } from 'src/apps/bot/modules/telegram-bot/telegram-bot.module';
 import { ConfigService } from '@nestjs/config';
@@ -14,6 +15,7 @@ import { ConfigNames } from '@common/types/enums/configNames.enum';
   imports: [
     WinstonModule.forRoot(LOGGER_CONFIG),
     GlobalConfigModule,
+    DatabaseModule,
     ScheduleModule.forRoot(),
     TelegramBotModule.registerAsync({
       inject: [ConfigService],

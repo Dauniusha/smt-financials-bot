@@ -1,10 +1,12 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersRepo } from './repositories';
-import { LocalUsersRepo } from './repositories/local-users.repository';
+import { TypeOrmUsersRepo } from './repositories/typeorm-users.repository';
+import { User } from './entities/user';
 
 @Module({
-  imports: [],
-  providers: [{ provide: UsersRepo, useClass: LocalUsersRepo }],
+  imports: [TypeOrmModule.forFeature([User])],
+  providers: [{ provide: UsersRepo, useClass: TypeOrmUsersRepo }],
   exports: [UsersRepo],
 })
 export class UsersModule {}

@@ -1,22 +1,30 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { google, sheets_v4 } from 'googleapis';
 import { GoogleSheetsConfig } from './google-sheets.config';
 
 @Injectable()
-export class GoogleSheetsService {
+export class GoogleSheetsService implements OnModuleInit {
   private readonly logger = new Logger(GoogleSheetsService.name);
   private sheets: sheets_v4.Sheets;
 
-  constructor(private readonly config: GoogleSheetsConfig) {
-    this.initializeGoogleSheets();
+  constructor(private readonly config: GoogleSheetsConfig) {}
+
+  async onModuleInit() {
+    await this.initializeGoogleSheets();
   }
 
   private async initializeGoogleSheets() {
     try {
       const { serviceAccountKey } = this.config.config;
 
+      const credentials = JSON.parse(serviceAccountKey);
+
+      if (credentials.private_key) {
+        credentials.private_key = credentials.private_key.replace(/\\n/g, '\n');
+      }
+
       const auth = new google.auth.GoogleAuth({
-        apiKey: serviceAccountKey,
+        credentials,
         scopes: ['https://www.googleapis.com/auth/spreadsheets'],
       });
 

@@ -95,7 +95,7 @@ export class ActionsService {
         }
 
         this.logger.error(`Error during message handler execution:`);
-        this.logger.error(err);
+        this.logger.error((err as Error).stack);
       }
     }
   }

@@ -5,6 +5,7 @@ import { validateConfig } from '@common/utils/config-validator';
 import { ConfigNames } from '@common/types/enums/configNames.enum';
 import { IAppConfig } from '../../configs/app.config';
 import { ITelegramConfig } from '../../configs/telegram.config';
+import { databaseConfig, IDatabaseConfig } from '../../configs/database.config';
 import {
   googleSheetsConfig,
   IGoogleSheetsConfig,
@@ -28,6 +29,13 @@ import {
       inject: [ConfigService],
     },
     {
+      provide: ConfigNames.DATABASE,
+      useFactory: (configService: ConfigService): IDatabaseConfig => {
+        return configService.getOrThrow<IDatabaseConfig>(ConfigNames.DATABASE);
+      },
+      inject: [ConfigService],
+    },
+    {
       provide: ConfigNames.GOOGLE_SHEETS,
       useFactory: (configService: ConfigService): IGoogleSheetsConfig => {
         return configService.getOrThrow<IGoogleSheetsConfig>(
@@ -39,11 +47,16 @@ import {
   ],
   imports: [
     ConfigModule.forRoot({
-      load: [appConfig, telegramConfig, googleSheetsConfig],
+      load: [appConfig, telegramConfig, databaseConfig, googleSheetsConfig],
       isGlobal: true,
       validate: validateConfig,
     }),
   ],
-  exports: [ConfigNames.APP, ConfigNames.TELEGRAM, ConfigNames.GOOGLE_SHEETS],
+  exports: [
+    ConfigNames.APP,
+    ConfigNames.TELEGRAM,
+    ConfigNames.DATABASE,
+    ConfigNames.GOOGLE_SHEETS,
+  ],
 })
 export class GlobalConfigModule {}

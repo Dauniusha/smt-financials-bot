@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { WinstonModule } from 'nest-winston';
 import { AuthModule } from '@common/modules/auth';
 import { GlobalConfigModule } from '@common/modules/config/global-config.module';
+import { DatabaseModule } from '@common/modules/database/database.module';
 import { LOGGER_CONFIG } from '@common/configs';
 import { FinancialModule } from '@core/financial/financial.module';
 
@@ -12,6 +13,7 @@ import { FinancialModule } from '@core/financial/financial.module';
   imports: [
     WinstonModule.forRoot(LOGGER_CONFIG),
     GlobalConfigModule,
+    DatabaseModule,
     ThrottlerModule.forRoot(),
     AuthModule,
     FinancialModule,

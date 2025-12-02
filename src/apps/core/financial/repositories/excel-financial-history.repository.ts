@@ -23,24 +23,35 @@ export class ExcelFinancialHistoryRepo implements FinancialHistoryRepo {
       const nextRow = 4 + existingData.length;
 
       const rowValues = [
-        history.balanceChange, // BYN
-        0, // USD (Not supported)
+        Number((history.balanceChange / 100).toFixed(2)), // BYN
+        '', // USD (Not supported)
         history.purpose,
         history.comment || '',
-        '', // BYN after total
-        '', // USD after total
-        history.date,
       ];
 
-      await this.googleSheetsService.writeRange(
-        `A${nextRow}:G${nextRow}`,
-        [rowValues],
-        this.sheetIdentifier,
-      );
+      await Promise.all([
+        this.googleSheetsService.writeRange(
+          `A${nextRow}:D${nextRow}`,
+          [rowValues],
+          this.sheetIdentifier,
+        ),
+        this.googleSheetsService.writeRange(
+          `G${nextRow}`,
+          [[this.formatDateForExcel(history.date)]],
+          this.sheetIdentifier,
+        ),
+      ]);
     } catch (error) {
       this.logger.error('Failed to add financial history', error);
       throw error;
     }
+  }
+
+  private formatDateForExcel(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${month}.${day}.${year}`;
   }
 
   async getCurrentBudget(): Promise<{ total: number }> {

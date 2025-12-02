@@ -1,6 +1,14 @@
 import { CustomBadRequestException } from '@common/exceptions/custom-bad-request.exception';
 import { User } from '@core/users/entities/user';
 import { plainToInstance } from 'class-transformer';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
 
 export enum RequestStatus {
   Waiting = 'waiting',
@@ -9,6 +17,7 @@ export enum RequestStatus {
   Rejected = 'rejected',
 }
 
+@Entity('financial_requests')
 export class FinancialRequest {
   /**
    * @param message special typed message, example:
@@ -43,22 +52,46 @@ export class FinancialRequest {
       purpose,
       comment: comment || undefined,
       preferredPaymentMethod: preferredPaymentMethod || 'cash',
-      userId: user.id,
       user: user,
     });
   }
 
+  @PrimaryGeneratedColumn()
   id?: number;
+
+  @Column('int')
   value: number;
+
+  @Column()
   purpose: string;
+
+  @Column({ nullable: true })
   comment?: string;
+
+  @Column('uuid', { name: 'user_id' })
   userId: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
   user?: User;
+
+  @Column({ type: 'enum', enum: RequestStatus, default: RequestStatus.Waiting })
   status: RequestStatus = RequestStatus.Waiting;
+
+  @CreateDateColumn()
   date: Date = new Date();
+
+  @Column({ name: 'preferred_payment_method', nullable: true })
   preferredPaymentMethod?: string;
+
+  @Column('uuid', { name: 'reviewer_id', nullable: true })
   reviewerId?: string;
+
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'reviewer_id' })
   reviewer?: User;
+
+  @Column({ name: 'reviewed_at', type: 'timestamp', nullable: true })
   reviewedAt?: Date;
 
   review(approve: boolean, currentBalance: number, reviewer: User) {
